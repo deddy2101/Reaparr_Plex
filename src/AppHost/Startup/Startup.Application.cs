@@ -77,6 +77,10 @@ public static partial class Startup
 
         app.UseAuthentication();
 
+        // API key authentication for trusted external clients (e.g. the Jellyfin plugin).
+        // Must run after UseAuthentication() so the cookie handler does not overwrite the principal.
+        app.UseMiddleware<ApiKeyAuthenticationMiddleware>();
+
         // When I_AM_DUMB_SO_DISABLE_AUTHENTICATION is set, inject a synthetic Admin principal.
         // This must run after UseAuthentication() (so auth middleware does not overwrite it)
         // and before UseAuthorization() (so authorization checks use the synthetic principal).

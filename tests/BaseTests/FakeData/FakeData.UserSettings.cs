@@ -41,6 +41,7 @@ public static partial class FakeData
             .StrictMode(true)
             .UseSeed(seed.Next())
             .RuleFor(x => x.HeaderAuthentication, _ => HeaderAuthenticationSettings.Create())
+            .RuleFor(x => x.ApiKeyAuthentication, _ => ApiKeyAuthenticationSettings.Create())
             .RuleFor(x => x.ResetCredentials, _ => false);
     }
 

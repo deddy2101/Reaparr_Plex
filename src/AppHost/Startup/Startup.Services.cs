@@ -176,6 +176,18 @@ public static partial class Startup
                     );
                     s.OperationProcessors.Add(new OperationSecurityScopeProcessor("HeaderAuth"));
 
+                    s.AddAuth(
+                        "ApiKeyAuth",
+                        new()
+                        {
+                            Type = OpenApiSecuritySchemeType.ApiKey,
+                            In = OpenApiSecurityApiKeyLocation.Header,
+                            Name = ApiKeyAuthenticationMiddleware.HeaderName,
+                            Description = "API key authentication for trusted external clients",
+                        }
+                    );
+                    s.OperationProcessors.Add(new OperationSecurityScopeProcessor("ApiKeyAuth"));
+
                     s.OperationProcessors.Add(new OperationSecurityScopeProcessor("CookieAuth"));
                 };
             });
