@@ -127,17 +127,9 @@ public class GetAllMediaByTypeEndpoint : Endpoint<GetAllMediaByTypeRequest, Plex
     {
         var filters = new List<string>();
 
-        if (!string.IsNullOrWhiteSpace(req.Search))
-        {
-            var searchTerms = req
-                .Search.ToLowerInvariant()
-                .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .Where(x => x.Length >= 2)
-                .Distinct();
-
-            foreach (var term in searchTerms)
-                filters.Add($"SearchTitle:contains:{EscapeFlexValue(term)}");
-        }
+        // The stored SearchTitle has punctuation and stop words removed: the query must be normalized the same way.
+        foreach (var term in req.Search.ToSearchTerms())
+            filters.Add($"SearchTitle:contains:{EscapeFlexValue(term)}");
 
         if (req.CountryId is > 0)
             filters.Add($"Countries:any:Id:eq:{req.CountryId}");

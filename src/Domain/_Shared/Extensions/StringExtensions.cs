@@ -162,6 +162,35 @@ public static partial class StringExtensions
         return searchTitle;
     }
 
+    /// <summary>
+    /// Splits a user typed search query into the terms to look for inside <see cref="ToSearchTitle"/> values.
+    /// <para>
+    /// The query goes through the same normalization as stored titles (lower case, no diacritics, punctuation removed
+    /// without inserting a space, stop words dropped), otherwise "The Amazing Spider-Man" can never match the stored
+    /// "amazing spiderman". A query made only of stop words is kept as typed so it still returns something.
+    /// </para>
+    /// </summary>
+    /// <param name="query">The text typed by the user.</param>
+    /// <returns>The distinct terms, all of which must be contained in the stored search title.</returns>
+    public static IReadOnlyList<string> ToSearchTerms(this string? query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+            return [];
+
+        var normalized = RemovePunctuationRegex().Replace(RemoveDiacritics(query.ToLowerInvariant()), string.Empty);
+
+        var allTerms = normalized
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            // One character terms are noise ("a", "x") unless they are a number such as the "2" of "Spider-Man 2".
+            .Where(x => x.Length >= 2 || char.IsDigit(x[0]))
+            .Distinct()
+            .ToList();
+
+        var withoutStopWords = allTerms.Where(x => !_stopWords.Contains(x)).ToList();
+
+        return withoutStopWords.Count > 0 ? withoutStopWords : allTerms;
+    }
+
     private static string RemoveDiacritics(string text)
     {
         var normalizedString = text.Normalize(NormalizationForm.FormD);
