@@ -35,6 +35,7 @@ public static partial class PlexMediaDTOMapper
             OriginallyAvailableAt = source.OriginallyAvailableAt,
             Children = [],
             PlexApiMetaDataKey = source.PlexApiMetaDataKey,
+            IndexNumber = source.EpisodeNumber,
         };
 
     public static List<PlexMediaDataDTO> ToDTO(this ICollection<PlexTvShowEpisodeMediaData> source) =>

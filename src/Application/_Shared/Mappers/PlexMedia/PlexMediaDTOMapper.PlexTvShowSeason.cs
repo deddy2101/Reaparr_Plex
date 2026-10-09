@@ -46,5 +46,6 @@ public static partial class PlexMediaDTOMapper
             OriginallyAvailableAt = source.OriginallyAvailableAt,
             Children = [],
             PlexApiMetaDataKey = source.PlexApiMetaDataKey,
+            IndexNumber = source.SeasonNumber,
         };
 }

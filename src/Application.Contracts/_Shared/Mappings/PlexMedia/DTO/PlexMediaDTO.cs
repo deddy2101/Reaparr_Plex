@@ -23,4 +23,10 @@ public record PlexMediaDTO : PlexMediaSlimDTO
     public required List<PlexMediaDataDTO> MediaData { get; set; } = [];
 
     public required List<PlexMediaDTO> Children { get; set; } = [];
+
+    /// <summary>
+    /// The season number (for seasons) or episode number within its season (for episodes). Zero for other media types.
+    /// Not <c>required</c> so existing constructions keep compiling.
+    /// </summary>
+    public int IndexNumber { get; set; }
 }
